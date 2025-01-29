@@ -1,0 +1,114 @@
+name: "Android ROM Build Tester"
+author: 'ragebreaker'
+description: "A GitHub action to test Android ROM buildability in the first hour"
+
+inputs:
+  REPO_INIT_CMD:
+    description: 'Repo init command (e.g., LineageOS, AOSP manifest readme command)'
+    required: true
+    type: string
+  MANIFEST_BRANCH:
+    description: 'ROM Branch (e.g., lineage-20.0, android-13.0.0_r41)'
+    required: true
+    type: string
+  LOCAL_MANIFEST:
+    description: 'Raw local manifest link or repository'
+    required: true
+    type: string
+  LOCAL_MANIFEST_BRANCH:
+    description: 'Local Manifest Branch'
+    default: ''
+    type: string
+  LUNCH_COMMAND:
+    description: 'breakfast or lunch command'
+    required: true
+    type: string
+    default: 'lunch lineage_blossom-userdebug'
+  BUILD_COMMAND:
+    description: 'Build Target (what to build)'
+    default: 'mka bacon'
+    type: string
+  TEST_BUILD_DURATION:
+    description: 'Maximum build test duration in minutes'
+    default: '60'
+    type: string
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Build Environment
+      shell: bash
+      run: |
+        sudo apt-get update
+        set +e
+        sudo apt-get install -y bc bison build-essential curl flex g++-multilib gcc-multilib git gnupg gperf imagemagick \
+            lib32ncurses5-dev lib32readline-dev lib32z1-dev liblz4-tool libncurses5 libncurses5-dev libsdl1.2-dev \
+            libssl-dev libxml2 libxml2-utils lzop pngcrush rsync schedtool squashfs-tools xsltproc zip zlib1g-dev \
+            python3 python2 openjdk-11-jdk
+        set -e
+
+    - name: Configure the 'repo' environment
+      run: |
+        # Check if repo is already installed
+        if ! command -v repo >/dev/null 2>&1; then
+          echo "Repo not found. Installing now..."
+          # Create bin directory if it doesn't exist
+          mkdir -p ~/bin
+          # Download repo script
+          curl https://storage.googleapis.com/git-repo-downloads/repo >> ~/bin/repo
+          # Make repo script executable
+          chmod a+x ~/bin/repo
+          # Create symbolic link to /usr/bin/repo
+          sudo ln -sf "/home/$(whoami)/bin/repo" "/usr/bin/repo"
+          echo "Repo installation complete."
+        else
+          echo "Repo already installed."
+        fi
+      continue-on-error: true
+
+    - name: Sync Local Manifests and Repo
+      run: |
+        rm -rf android
+        mkdir android
+        cd android
+        
+        if [[ "${{ inputs.LOCAL_MANIFEST }}" =~ \.xml(/)?$ ]]; then
+            local_manifest_url="${{ inputs.LOCAL_MANIFEST }}"
+            export local_manifest_url="${local_manifest_url%/}"  # remove trailing slash if it exists
+            LOCAL_MANIFEST="mkdir -p .repo/local_manifests && rm -rf .repo/local_manifests/* || true && curl -o .repo/local_manifests/local_manifest.xml ${local_manifest_url}"
+          else
+            export LOCAL_MANIFEST="git clone ${{ github.event.inputs.LOCAL_MANIFEST }} --depth 1 -b ${{github.event.inputs.LOCAL_MANIFEST_BRANCH}} .repo/local_manifests"
+          fi
+          
+        ${{ inputs.REPO_INIT_CMD }}
+        
+        bash -c "$LOCAL_MANIFEST"
+        timeout 10m repo sync --force-sync || { exit_code=$?; [ $exit_code -eq 124 ] || (echo "Error: Process failed with exit code $exit_code"; exit $exit_code); }
+        du -csh . # Output Size when done
+      timeout-minutes: 30
+
+    - name: Test Build
+      shell: bash
+      timeout-minutes: ${{ inputs.TEST_BUILD_DURATION }}
+      run: |
+        cd android
+        source build/envsetup.sh
+        ${{ inputs.LUNCH_COMMAND }})
+        export ALLOW_MISSING_DEPENDENCIES=true
+        echo "Note: Allow missing dependencies is always true (to build only boot images for example) !"
+        ${{ inputs.BUILD_COMMAND }} -j$(nproc --all) || exit 1
+
+    - name: Build Status Check
+      shell: bash
+      run: |
+        if [ $? -eq 0 ]; then
+          echo "BUILD_STATUS=success" >> $GITHUB_ENV
+          echo "Build test completed successfully within time limit"
+        else
+          echo "BUILD_STATUS=failure" >> $GITHUB_ENV
+          echo "Build test failed or exceeded time limit"
+        fi
+
+branding:
+  icon: 'check-circle'
+  color: 'green'
