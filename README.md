@@ -4,7 +4,7 @@ A GitHub Action designed to test the buildability of Android ROMs for an hour. T
 
 ## Note
 
-- Make sure the build is small enough (or doesnt take more space than needed) to be able to run. Latest (at the time: A15 builds, github container size: around 90gb) are doomed to fail as they would definitely take more than 100gb to sync...
+- Make sure the build is small enough (or doesnt take more space than needed) to be able to run. Latest (at the time: A15 builds, github container size: around 90gb) are doomed to fail as they would definitely take more than 100gb to sync...You could use a selfhosted runner or a bigger paid contaiiner if needed
 
 ## Features
 
