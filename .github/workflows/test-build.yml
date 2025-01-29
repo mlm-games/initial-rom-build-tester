@@ -108,7 +108,7 @@ jobs:
         uses: mlm-games/initial-rom-build-tester@main
         with:
           REPO_INIT_CMD: ${{ github.event_name == 'workflow_dispatch' && inputs.REPO_INIT_CMD || 'repo init -u https://github.com/LineageOS/android.git -b cm-14.1' }}
-          LOCAL_MANIFEST: ${{ github.event_name == 'workflow_dispatch' && inputs.LOCAL_MANIFEST || 'https://raw.githubusercontent.com/mlm-games/android_local_manifests/refs/heads/rising-crdroid-lineage-22/m31s_a15.xml' }}
+          LOCAL_MANIFEST: ${{ github.event_name == 'workflow_dispatch' && inputs.LOCAL_MANIFEST || 'https://raw.githubusercontent.com/mlm-games/android_local_manifests/refs/heads/main/nicklaus_cm14_1.xml' }}
           LUNCH_COMMAND: ${{ github.event_name == 'workflow_dispatch' && inputs.LUNCH_COMMAND || 'breakfast nicklaus' }}
           BUILD_COMMAND: ${{ github.event_name == 'workflow_dispatch' && inputs.BUILD_COMMAND || 'make bacon' }}
           TEST_BUILD_DURATION: ${{ github.event_name == 'workflow_dispatch' && inputs.TEST_BUILD_DURATION || '60' }}
