@@ -112,3 +112,8 @@ jobs:
           LUNCH_COMMAND: ${{ github.event_name == 'workflow_dispatch' && inputs.LUNCH_COMMAND || 'breakfast nicklaus' }}
           BUILD_COMMAND: ${{ github.event_name == 'workflow_dispatch' && inputs.BUILD_COMMAND || 'make bacon' }}
           TEST_BUILD_DURATION: ${{ github.event_name == 'workflow_dispatch' && inputs.TEST_BUILD_DURATION || '60' }}
+          
+      - name: Display manifest.xml
+        run: |
+          cd android
+          cat .repo/local-manifest.xml
