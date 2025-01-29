@@ -104,6 +104,13 @@ jobs:
             python-is-python2
           set -e
 
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'oracle' # See 'Supported distributions' for available options
+          java-version: '8'
+          
+
       - name: Initialize and Test ROM Build
         uses: mlm-games/initial-rom-build-tester@main
         with:
