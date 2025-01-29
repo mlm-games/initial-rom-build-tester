@@ -1,0 +1,50 @@
+name: Test ROM Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      REPO_INIT_CMD:
+        description: 'Repo init command (e.g., repo init -u https://github.com/LineageOS/android.git -b lineage-20.0)'
+        required: true
+      MANIFEST_BRANCH:
+        description: 'ROM Branch (e.g., lineage-20.0, android-13.0.0_r41)'
+        required: true
+      LOCAL_MANIFEST:
+        description: 'Raw local manifest link or repository URL'
+        required: true
+        default: ''
+      LOCAL_MANIFEST_BRANCH:
+        description: 'Local Manifest Branch (optional)'
+        required: false
+        default: ''
+      LUNCH_COMMAND:
+        description: 'Lunch command (e.g., lunch lineage_blossom-userdebug)'
+        required: true
+        default: 'lunch lineage_blossom-userdebug'
+      BUILD_COMMAND:
+        description: 'Build target (e.g., mka bacon)'
+        required: false
+        default: 'mka bacon'
+      TEST_BUILD_DURATION:
+        description: 'Maximum build test duration in minutes'
+        required: false
+        default: '60'
+
+jobs:
+  test-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Initialize and Test ROM Build
+        uses: mlm-games/initial-rom-build-tester@v1
+        with:
+          REPO_INIT_CMD: ${{ inputs.REPO_INIT_CMD }}
+          MANIFEST_BRANCH: ${{ inputs.MANIFEST_BRANCH }}
+          LOCAL_MANIFEST: ${{ inputs.LOCAL_MANIFEST }}
+          LOCAL_MANIFEST_BRANCH: ${{ inputs.LOCAL_MANIFEST_BRANCH }}
+          LUNCH_COMMAND: ${{ inputs.LUNCH_COMMAND }}
+          BUILD_COMMAND: ${{ inputs.BUILD_COMMAND }}
+          TEST_BUILD_DURATION: ${{ inputs.TEST_BUILD_DURATION }}
