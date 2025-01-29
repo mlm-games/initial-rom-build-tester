@@ -38,8 +38,69 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
+      - name: Cleanup
+        uses: rokibhasansagar/slimhub_actions@main
+      
       - name: Checkout Repository
         uses: actions/checkout@v4
+      
+      - name: Set up environment variables
+        run: |
+          echo "Setting environment variables"
+          export DEBIAN_FRONTEND=noninteractive
+          export LANG=C
+          export LANGUAGE=en_US:en
+          export LC_ALL=C
+          export ANDROID_JACK_VM_ARGS="-Dfile.encoding=UTF-8 -XX:+TieredCompilation -Xmx4G"
+          export USER=$(whoami)
+          
+      - name: Install deps (some might be missing in the original action)
+        run: |
+          echo "Installing dependencies..."
+          sudo add-apt-repository ppa:deadsnakes/ppa -y
+          sudo apt update && sudo apt install -y locales && sudo locale-gen en_US.UTF-8
+          sudo apt install -y \
+            git-core \
+            gnupg \
+            flex \
+            bison \
+            gperf \
+            build-essential \
+            zip \
+            curl \
+            zlib1g-dev \
+            gcc-multilib \
+            g++-multilib \
+            libc6-dev-i386 \
+            libncurses5 \
+            lib32ncurses5-dev \
+            x11proto-core-dev \
+            libx11-dev \
+            lib32z1-dev \
+            ccache \
+            libgl1-mesa-dev \
+            libxml2-utils \
+            xsltproc \
+            unzip \
+            python \
+            wget \
+            openjdk-8-jdk \
+            android-tools-adb \
+            android-tools-fastboot \
+            schedtool \
+            libssl-dev \
+            bc \
+            rsync \
+            nano \
+            vim \
+            screen \
+            imagemagick \
+            lsof \
+            python3 \
+            python3-pip \
+            locales \
+            python2.7 \
+            python-is-python2 
 
       - name: Initialize and Test ROM Build
         uses: mlm-games/initial-rom-build-tester@main
