@@ -74,9 +74,11 @@ runs:
         mkdir -p .repo/local_manifests
         
         if [[ "${{ inputs.LOCAL_MANIFEST }}" =~ \.xml$ ]]; then
+          echo "Curling xml..."
           curl -L "${{ inputs.LOCAL_MANIFEST }}" > .repo/local_manifests/local_manifest.xml
         else
           if [ -n "${{ inputs.LOCAL_MANIFEST_BRANCH }}" ]; then
+            echo "Cloning with branch"
             git clone "${{ inputs.LOCAL_MANIFEST }}" -b "${{ inputs.LOCAL_MANIFEST_BRANCH }}" .repo/local_manifests
           else
             git clone "${{ inputs.LOCAL_MANIFEST }}" .repo/local_manifests
