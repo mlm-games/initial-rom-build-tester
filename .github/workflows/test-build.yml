@@ -17,7 +17,7 @@ on:
       LOCAL_MANIFEST:
         description: 'Raw local manifest link or repository URL'
         required: true
-        default: ''
+        default: 'https://raw.githubusercontent.com/mlm-games/android_local_manifests/refs/heads/rising-crdroid-lineage-22/m31s_a15.xml'
       LOCAL_MANIFEST_BRANCH:
         description: 'Local Manifest Branch (optional)'
         required: false
@@ -25,7 +25,7 @@ on:
       LUNCH_COMMAND:
         description: 'Lunch command (e.g., lunch lineage_blossom-userdebug)'
         required: true
-        default: 'lunch lineage_blossom-userdebug'
+        default: 'lunch lineage_m31s-userdebug'
       BUILD_COMMAND:
         description: 'Build target (e.g., mka bacon)'
         required: false
