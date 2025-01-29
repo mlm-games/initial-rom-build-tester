@@ -48,6 +48,7 @@ runs:
         set -e
 
     - name: Configure the 'repo' environment
+      shell: bash
       run: |
         # Check if repo is already installed
         if ! command -v repo >/dev/null 2>&1; then
@@ -64,9 +65,9 @@ runs:
         else
           echo "Repo already installed."
         fi
-      continue-on-error: true
 
     - name: Sync Local Manifests and Repo
+      shell: bash
       run: |
         rm -rf android
         mkdir android
@@ -76,27 +77,25 @@ runs:
             local_manifest_url="${{ inputs.LOCAL_MANIFEST }}"
             export local_manifest_url="${local_manifest_url%/}"  # remove trailing slash if it exists
             LOCAL_MANIFEST="mkdir -p .repo/local_manifests && rm -rf .repo/local_manifests/* || true && curl -o .repo/local_manifests/local_manifest.xml ${local_manifest_url}"
-          else
+        else
             export LOCAL_MANIFEST="git clone ${{ github.event.inputs.LOCAL_MANIFEST }} --depth 1 -b ${{github.event.inputs.LOCAL_MANIFEST_BRANCH}} .repo/local_manifests"
-          fi
+        fi
           
         ${{ inputs.REPO_INIT_CMD }}
         
         bash -c "$LOCAL_MANIFEST"
         timeout 10m repo sync --force-sync || { exit_code=$?; [ $exit_code -eq 124 ] || (echo "Error: Process failed with exit code $exit_code"; exit $exit_code); }
         du -csh . # Output Size when done
-      timeout-minutes: 30
 
     - name: Test Build
       shell: bash
-      timeout-minutes: ${{ inputs.TEST_BUILD_DURATION }}
       run: |
         cd android
         source build/envsetup.sh
-        ${{ inputs.LUNCH_COMMAND }})
+        ${{ inputs.LUNCH_COMMAND }}
         export ALLOW_MISSING_DEPENDENCIES=true
         echo "Note: Allow missing dependencies is always true (to build only boot images for example) !"
-        ${{ inputs.BUILD_COMMAND }} -j$(nproc --all) || exit 1
+        timeout ${{ inputs.TEST_BUILD_DURATION }}m ${{ inputs.BUILD_COMMAND }} -j$(nproc --all) || exit 1
 
     - name: Build Status Check
       shell: bash
