@@ -7,17 +7,13 @@ inputs:
     description: 'Repo init command (e.g., LineageOS, AOSP manifest readme command)'
     required: true
     type: string
-  MANIFEST_BRANCH:
-    description: 'ROM Branch (e.g., lineage-20.0, android-13.0.0_r41)'
-    required: true
-    type: string
   LOCAL_MANIFEST:
     description: 'Raw local manifest link or repository'
     required: true
     type: string
   LOCAL_MANIFEST_BRANCH:
     description: 'Local Manifest Branch'
-    default: ''
+    default: 'main'
     type: string
   LUNCH_COMMAND:
     description: 'breakfast or lunch command'
