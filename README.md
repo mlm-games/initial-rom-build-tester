@@ -1,6 +1,10 @@
 # Initial ROM Build Tester
 
-A GitHub Action designed to test the buildability of Android ROMs within an hour. This action streamlines the process of configuring the environment, syncing the source code, and initiating a test build for Android ROMs.
+A GitHub Action designed to test the buildability of Android ROMs for an hour. This action streamlines the process of configuring the environment, syncing the source code, and initiating a test build for Android ROMs.
+
+## Note
+
+- Make sure the build is small enough (or doesnt take more space than needed) to be able to run. Latest (at the time: A15 builds, github container size: around 90gb) are doomed to fail as they would definitely take more than 100gb to sync...
 
 ## Features
 
@@ -157,8 +161,7 @@ To enable debug mode, set the repository secret `ACTIONS_STEP_DEBUG` to `true`.
 ├── repos/
 │   └── initial-rom-build-tester/
 │       ├── action.yml           # GitHub Action definition
-│       ├── README.md            # Documentation for the action (this file)
-│       ├── setup-scripts/       # Optional setup scripts (if needed)
+│       ├── README.md            # Documentation for the action (this file
 ```
 
 
