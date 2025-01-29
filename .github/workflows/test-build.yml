@@ -107,7 +107,7 @@ jobs:
       - name: Setup Java JDK
         uses: actions/setup-java@v4
         with:
-          distribution: 'oracle' # See 'Supported distributions' for available options
+          distribution: 'corretto' # See 'Supported distributions' for available options
           java-version: '8'
           
 
