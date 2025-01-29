@@ -44,7 +44,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Initialize and Test ROM Build
-        uses: mlm-games/initial-rom-build-tester@v1
+        uses: mlm-games/initial-rom-build-tester@main
         with:
           REPO_INIT_CMD: ${{ inputs.REPO_INIT_CMD }}
           MANIFEST_BRANCH: ${{ inputs.MANIFEST_BRANCH }}
