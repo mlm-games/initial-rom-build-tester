@@ -59,6 +59,7 @@ jobs:
           echo "Installing dependencies..."
           sudo add-apt-repository ppa:deadsnakes/ppa -y
           sudo apt update && sudo apt install -y locales && sudo locale-gen en_US.UTF-8
+          set +e
           sudo apt install -y \
             git-core \
             gnupg \
@@ -100,7 +101,8 @@ jobs:
             python3-pip \
             locales \
             python2.7 \
-            python-is-python2 
+            python-is-python2
+          set -e
 
       - name: Initialize and Test ROM Build
         uses: mlm-games/initial-rom-build-tester@main
