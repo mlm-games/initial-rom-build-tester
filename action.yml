@@ -53,13 +53,9 @@ runs:
         # Check if repo is already installed
         if ! command -v repo >/dev/null 2>&1; then
           echo "Repo not found. Installing now..."
-          # Create bin directory if it doesn't exist
           mkdir -p ~/bin
-          # Download repo script
-          curl https://storage.googleapis.com/git-repo-downloads/repo >> ~/bin/repo
-          # Make repo script executable
+          curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
           chmod a+x ~/bin/repo
-          # Create symbolic link to /usr/bin/repo
           sudo ln -sf "/home/$(whoami)/bin/repo" "/usr/bin/repo"
           echo "Repo installation complete."
         else
@@ -73,18 +69,26 @@ runs:
         mkdir android
         cd android
         
-        if [[ "${{ inputs.LOCAL_MANIFEST }}" =~ \.xml(/)?$ ]]; then
-            local_manifest_url="${{ inputs.LOCAL_MANIFEST }}"
-            export local_manifest_url="${local_manifest_url%/}"  # remove trailing slash if it exists
-            LOCAL_MANIFEST="mkdir -p .repo/local_manifests && rm -rf .repo/local_manifests/* || true && curl -o .repo/local_manifests/local_manifest.xml ${local_manifest_url}"
-        else
-            export LOCAL_MANIFEST="git clone ${{ github.event.inputs.LOCAL_MANIFEST }} --depth 1 -b ${{github.event.inputs.LOCAL_MANIFEST_BRANCH}} .repo/local_manifests"
-        fi
-          
+        # Initialize repo
         ${{ inputs.REPO_INIT_CMD }}
         
-        bash -c "$LOCAL_MANIFEST"
-        timeout 10m repo sync --force-sync || { exit_code=$?; [ $exit_code -eq 124 ] || (echo "Error: Process failed with exit code $exit_code"; exit $exit_code); }
+        # Setup local manifest
+        mkdir -p .repo/local_manifests
+        
+        if [[ "${{ inputs.LOCAL_MANIFEST }}" =~ \.xml$ ]]; then
+          curl -L "${{ inputs.LOCAL_MANIFEST }}" > .repo/local_manifests/local_manifest.xml
+        else
+          if [ -n "${{ inputs.LOCAL_MANIFEST_BRANCH }}" ]; then
+            git clone "${{ inputs.LOCAL_MANIFEST }}" -b "${{ inputs.LOCAL_MANIFEST_BRANCH }}" .repo/local_manifests
+          else
+            git clone "${{ inputs.LOCAL_MANIFEST }}" .repo/local_manifests
+          fi
+        fi
+        
+        # Sync repositories
+        timeout 30m repo sync -c --force-sync --no-clone-bundle --no-tags -j$(nproc --all) || \
+          { exit_code=$?; [ $exit_code -eq 124 ] && echo "Timeout during sync" || (echo "Error: Process failed with exit code $exit_code"; exit $exit_code); }
+        
         du -csh . # Output Size when done
 
     - name: Test Build
