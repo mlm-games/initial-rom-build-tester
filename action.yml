@@ -93,10 +93,12 @@ runs:
       shell: bash
       run: |
         cd android
+        set +e
         source build/envsetup.sh
         ${{ inputs.LUNCH_COMMAND }}
         export ALLOW_MISSING_DEPENDENCIES=true
         echo "Note: Allow missing dependencies is always true (to build only boot images for example) !"
+        set -e
         timeout ${{ inputs.TEST_BUILD_DURATION }}m ${{ inputs.BUILD_COMMAND }} -j$(nproc --all) || exit 1
 
     - name: Build Status Check
