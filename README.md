@@ -8,9 +8,7 @@ A GitHub Action designed to test the buildability of Android ROMs within an hour
 - **Customizable Inputs**: Supports various ROM configurations and build commands.
 - **Automated Environment Setup**: Installs all necessary dependencies for building Android ROMs.
 - **Error Handling**: Logs failures and provides helpful debug information.
-
----
-
+- 
 ## How It Works
 
 The action automates the following steps:
@@ -19,7 +17,7 @@ The action automates the following steps:
 3. **Build Test**: Compiles the ROM for a specified target device.
 4. **Build Status Report**: Outputs whether the build succeeded or failed.
 
----
+
 
 ## Usage
 
@@ -87,12 +85,12 @@ jobs:
           TEST_BUILD_DURATION: ${{ inputs.TEST_BUILD_DURATION }}
 ```
 
----
+
 
 ## Inputs
 
 | **Input Name**         | **Description**                                                                                     | **Required** | **Default**                    |
-|-------------------------|-----------------------------------------------------------------------------------------------------|--------------|--------------------------------|
+|-|--|--|--|
 | `REPO_INIT_CMD`         | The `repo init` command to initialize the ROM repository.                                            | Yes          | N/A                            |
 | `MANIFEST_BRANCH`       | The branch of the ROM manifest to use (e.g., `lineage-20.0`, `android-13.0.0_r41`).                  | Yes          | N/A                            |
 | `LOCAL_MANIFEST`        | URL or Git repository for the local manifest.                                                       | Yes          | N/A                            |
@@ -101,14 +99,14 @@ jobs:
 | `BUILD_COMMAND`         | The build command to execute (e.g., `mka bacon`).                                                   | No           | `mka bacon`                    |
 | `TEST_BUILD_DURATION`   | Maximum duration (in minutes) to test the build process.                                            | No           | `60`                           |
 
----
+
 
 ## Outputs
 
 The action sets the following environment variable to indicate the build status:
 - `BUILD_STATUS`: `success` if the build succeeded, or `failure` if the build failed or timed out.
 
----
+
 
 ## How to Run
 
@@ -121,7 +119,7 @@ The action sets the following environment variable to indicate the build status:
    - Any other optional inputs as needed.
 4. Monitor the workflow execution logs to view the build progress.
 
----
+
 
 ## Example Inputs
 
@@ -135,7 +133,7 @@ Here’s an example of the workflow inputs for testing a LineageOS ROM:
 - **BUILD_COMMAND**: `mka bacon`
 - **TEST_BUILD_DURATION**: `90`
 
----
+
 
 ## Debugging
 
@@ -147,7 +145,7 @@ If the workflow fails:
 
 To enable debug mode, set the repository secret `ACTIONS_STEP_DEBUG` to `true`.
 
----
+
 
 ## Repository Structure
 
@@ -163,22 +161,22 @@ To enable debug mode, set the repository secret `ACTIONS_STEP_DEBUG` to `true`.
 │       ├── setup-scripts/       # Optional setup scripts (if needed)
 ```
 
----
+
 
 ## Contributing
 
 Contributions are welcome! If you encounter issues or want to enhance the action, feel free to open an issue or submit a pull request.
 
----
+
 
 ## License
 
 This project is licensed under the GPL 3.0 License. See the [LICENSE](LICENSE) file for details.
 
----
+
 
 ## Acknowledgments
 
 Special thanks to the Android ROM developer community for the tools, resources, and inspiration to create this action. 😊
 
---- 
+ 
