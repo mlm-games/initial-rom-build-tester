@@ -35,7 +35,7 @@ on:
 
 jobs:
   test-build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout Repository
@@ -44,12 +44,11 @@ jobs:
       - name: Initialize and Test ROM Build
         uses: mlm-games/initial-rom-build-tester@main
         with:
-          REPO_INIT_CMD: ${{ github.event_name == 'workflow_dispatch' && inputs.REPO_INIT_CMD || 'repo init -u https://github.com/LineageOS/android.git -b lineage-20.0' }}
-          MANIFEST_BRANCH: ${{ github.event_name == 'workflow_dispatch' && inputs.MANIFEST_BRANCH || 'lineage-22.1' }}
+          REPO_INIT_CMD: ${{ github.event_name == 'workflow_dispatch' && inputs.REPO_INIT_CMD || 'repo init -u https://github.com/LineageOS/android.git -b cm-14.1' }}
           LOCAL_MANIFEST: ${{ github.event_name == 'workflow_dispatch' && inputs.LOCAL_MANIFEST || 'https://raw.githubusercontent.com/mlm-games/android_local_manifests/refs/heads/rising-crdroid-lineage-22/m31s_a15.xml' }}
-          LOCAL_MANIFEST_BRANCH: ${{ github.event_name == 'workflow_dispatch' && inputs.LOCAL_MANIFEST_BRANCH || '' }}
-          LUNCH_COMMAND: ${{ github.event_name == 'workflow_dispatch' && inputs.LUNCH_COMMAND || 'lunch lineage_m31s-userdebug' }}
-          BUILD_COMMAND: ${{ github.event_name == 'workflow_dispatch' && inputs.BUILD_COMMAND || 'mka bacon' }}
+          LOCAL_MANIFEST_BRANCH: ${{ github.event_name == 'workflow_dispatch' && inputs.LOCAL_MANIFEST_BRANCH || 'https://raw.githubusercontent.com/mlm-games/android_local_manifests/refs/heads/main/nicklaus_cm14_1.xml' }}
+          LUNCH_COMMAND: ${{ github.event_name == 'workflow_dispatch' && inputs.LUNCH_COMMAND || 'breakfast nicklaus' }}
+          BUILD_COMMAND: ${{ github.event_name == 'workflow_dispatch' && inputs.BUILD_COMMAND || 'make bacon' }}
           TEST_BUILD_DURATION: ${{ github.event_name == 'workflow_dispatch' && inputs.TEST_BUILD_DURATION || '60' }}
 
       - name: Initialize and Test ROM Build
