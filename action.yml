@@ -5,10 +5,12 @@ description: "A GitHub action to test Android ROM buildability in the first hour
 inputs:
   REPO_INIT_CMD:
     description: 'Repo init command (e.g., LineageOS, AOSP manifest readme command)'
+    default: 'main'
     required: true
     type: string
   LOCAL_MANIFEST:
     description: 'Raw local manifest link or repository'
+    default: ''
     required: true
     type: string
   LOCAL_MANIFEST_BRANCH:
