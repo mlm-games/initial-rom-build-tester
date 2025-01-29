@@ -53,6 +53,12 @@ jobs:
           export LC_ALL=C
           export ANDROID_JACK_VM_ARGS="-Dfile.encoding=UTF-8 -XX:+TieredCompilation -Xmx4G"
           export USER=$(whoami)
+          export USE_DEX2OAT_DEBUG=false
+          export WITH_DEXPREOPT=false
+          export WITH_DEXPREOPT_BOOT_IMG_ONLY=false
+          export DISABLE_DEXPREOPT=true
+          export PRODUCT_MINIMIZE_JAVA_DEBUG_INFO=true
+          export TEMPORARY_DISABLE_PATH_RESTRICTIONS=true
           
       - name: Install deps (some might be missing in the original action)
         run: |
@@ -107,7 +113,7 @@ jobs:
       - name: Setup Java JDK
         uses: actions/setup-java@v4
         with:
-          distribution: 'corretto' # See 'Supported distributions' for available options
+          distribution: 'corretto'
           java-version: '8'
           
 
@@ -120,8 +126,3 @@ jobs:
           BUILD_COMMAND: ${{ github.event_name == 'workflow_dispatch' && inputs.BUILD_COMMAND || 'make bacon' }}
           TEST_BUILD_DURATION: ${{ github.event_name == 'workflow_dispatch' && inputs.TEST_BUILD_DURATION || '60' }}
           
-      - name: Display manifest.xml
-        if: always()
-        run: |
-          cd android
-          cat .repo/local-manifest.xml
