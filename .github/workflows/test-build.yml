@@ -11,9 +11,7 @@ on:
       REPO_INIT_CMD:
         description: 'Repo init command (e.g., repo init -u https://github.com/LineageOS/android.git -b lineage-20.0)'
         required: true
-      MANIFEST_BRANCH:
-        description: 'ROM Branch (e.g., lineage-20.0, android-13.0.0_r41)'
-        required: true
+        default: 'repo init -u https://github.com/LineageOS/android.git -b lineage-22.1 --git-lfs'
       LOCAL_MANIFEST:
         description: 'Raw local manifest link or repository URL'
         required: true
@@ -47,7 +45,6 @@ jobs:
         uses: mlm-games/initial-rom-build-tester@main
         with:
           REPO_INIT_CMD: ${{ inputs.REPO_INIT_CMD }}
-          MANIFEST_BRANCH: ${{ inputs.MANIFEST_BRANCH }}
           LOCAL_MANIFEST: ${{ inputs.LOCAL_MANIFEST }}
           LOCAL_MANIFEST_BRANCH: ${{ inputs.LOCAL_MANIFEST_BRANCH }}
           LUNCH_COMMAND: ${{ inputs.LUNCH_COMMAND }}
